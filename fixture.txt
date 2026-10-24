@@ -1,1 +1,2 @@
 Synthetic fixture baseline.
+Synthetic fixture change.
