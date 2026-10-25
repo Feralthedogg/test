@@ -1,2 +1,22 @@
-Synthetic fixture baseline.
-Synthetic fixture change.
+"""Synthetic integer price calculator for the multi-agent demonstration."""
+
+
+def total_cents(unit_cents: int, quantity: int, discount_bps: int = 0) -> int:
+    """Calculate the discounted total in cents with half-up rounding."""
+    for name, value in (
+        ("unit_cents", unit_cents),
+        ("quantity", quantity),
+        ("discount_bps", discount_bps),
+    ):
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise TypeError(f"{name} must be an integer")
+
+    if unit_cents < 0:
+        raise ValueError("unit_cents must be nonnegative")
+    if quantity < 0:
+        raise ValueError("quantity must be nonnegative")
+    if not 0 <= discount_bps <= 10_000:
+        raise ValueError("discount_bps must be between 0 and 10000")
+
+    discounted_basis_points = unit_cents * quantity * (10_000 - discount_bps)
+    return (discounted_basis_points + 5_000) // 10_000
