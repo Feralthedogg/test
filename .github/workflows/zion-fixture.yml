@@ -1,0 +1,36 @@
+name: Zion synthetic checks
+
+on:
+  push:
+    branches:
+      - main
+      - 'zion/work/**'
+
+permissions:
+  contents: read
+
+jobs:
+  zion-fixture:
+    name: zion-fixture
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check out the exact candidate
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Run synthetic contract tests
+        run: python3 -B fixture-next.txt
+      - name: Check the combined synthetic change
+        run: |
+          python3 -B - <<'PY'
+          from pathlib import Path
+
+          api = Path('fixture.txt').read_text().splitlines()
+          tests = Path('fixture-next.txt').read_text().splitlines()
+          flag_a = 'ZION_MERGE_A = 1' in api
+          flag_b = 'ZION_MERGE_B = 1' in tests
+          if flag_a and flag_b:
+              raise SystemExit('Combined synthetic flags conflict')
+          print('Combined synthetic change passed')
+          PY
