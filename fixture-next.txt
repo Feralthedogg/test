@@ -73,4 +73,4 @@ class TotalCentsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
-ZION_MERGE_B = 1
+ZION_MERGE_B = 0
